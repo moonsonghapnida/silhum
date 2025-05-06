@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>여행 일정 선택</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      background: #f8f9fa;
+      color: #333;
+    }
+    .section {
+      max-width: 600px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+      padding: 30px;
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+    .section h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    .section p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .option-button {
+      display: inline-block;
+      margin: 8px 5px;
+      padding: 12px 20px;
+      border-radius: 30px;
+      background: #ecf0f1;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .option-button:hover {
+      background: #dfe6e9;
+    }
+    .option-button.selected {
+      background: #2d98da;
+      color: white;
+      font-weight: bold;
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #2d3436;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+    }
+    .footer button {
+      margin-left: 20px;
+      padding: 10px 20px;
+      background: #00cec9;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="section active" id="arrival">
+    <h2>항공 도착편 선택</h2>
+    <p>해당되는 항공편이 주간에 도착하시나요?</p>
+    <button class="option-button" data-price="20" data-key="arrival" data-daytime="true">주간도착 (+$20)</button>
+    <button class="option-button" data-price="0" data-key="arrival" data-daytime="false">야간도착 (+$0)</button>
+  </div>
+
+  <div class="section" id="day1-select1">
+    <h2>1일차 - 선택 1</h2>
+    <p>첫번째 일정 선택</p>
+    <button class="option-button" data-price="10" data-key="day1-select1">코프센터, 왓 씨므앙, 왓 씨사켓, 호 빠깨우 (+$10)</button>
+    <button class="option-button" data-price="0" data-key="day1-select1">체크인 후 휴식 및 자유 시간 (+$0)</button>
+  </div>
+
+  <div class="section" id="day1-select2">
+    <h2>1일차 - 선택 2</h2>
+    <p>두번째 일정 선택</p>
+    <button class="option-button" data-price="25" data-key="day1-select2">라오 전통 마사지 2시간 (+$25)</button>
+    <button class="option-button" data-price="13" data-key="day1-select2">라오 전통 마사지 1시간 (+$13)</button>
+    <button class="option-button" data-price="40" data-key="day1-select2">라오 허벌 테라피 2시간 (+$40)</button>
+    <button class="option-button" data-price="30" data-key="day1-select2">베트남식 이발소 풀케어 90분 (+$30)</button>
+    <button class="option-button" data-price="0" data-key="day1-select2">휴식 및 자유시간 (+$0)</button>
+  </div>
+
+  <div class="section" id="day1-select3">
+    <h2>1일차 - 선택 3</h2>
+    <p>1일차 석식</p>
+    <button class="option-button" data-price="0" data-key="day1-select3">제가 찾아볼게요! (무료)</button>
+    <button class="option-button" data-price="0" data-key="day1-select3">투어 디엔에이 추천을 받아볼래요! (한식) (+$0)</button>
+    <button class="option-button" data-price="0" data-key="day1-select3">투어 디엔에이 추천을 받아볼래요! (현지식) (+$0)</button>
+  </div>
+
+  <div class="footer">
+    총 가격: $<span id="total-price">0</span>
+    <button onclick="alert('예약이 완료되었습니다!')">예약하기</button>
+  </div>
+
+  <script>
+    let selected = {};
+
+    function updateTotal() {
+      const sum = Object.values(selected).reduce((acc, val) => acc + val, 0);
+      document.getElementById('total-price').innerText = sum;
+    }
+
+    function showSection(id) {
+      const section = document.getElementById(id);
+      if (section) section.classList.add("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".option-button").forEach(button => {
+        button.addEventListener("click", () => {
+          const price = parseInt(button.dataset.price);
+          const key = button.dataset.key;
+          const section = button.closest('.section');
+
+          section.querySelectorAll(".option-button").forEach(btn => btn.classList.remove("selected"));
+          button.classList.add("selected");
+          selected[key] = price;
+          updateTotal();
+
+          if (key === 'arrival' && button.dataset.daytime === "true") {
+            showSection("day1-select1");
+            showSection("day1-select2");
+            showSection("day1-select3");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
